@@ -188,37 +188,45 @@ window.helper = {
     return entities;
   },
 
-  getResponseDetect: async function (userMessage) {
+  getResponseDetect: async function(userMessage) {
     let entities;
     if (!this.useOnDeviceModel) {
-      const { getCloudResponseDetect } = await import(
-        chrome.runtime.getURL("openai.js")
-      );
-      entities = await getCloudResponseDetect(userMessage);
+        const { getCloudResponseDetect } = await import(
+            chrome.runtime.getURL("openai.js")
+        );
+        entities = await getCloudResponseDetect(userMessage);
     } else {
-      const { getOnDeviceResponseDetect } = await import(
+      // const { mergeEntitiesResults } = await import(
+      //   chrome.runtime.getURL("ondevice.js")
+      // );
+      //   entities = await mergeEntitiesResults(userMessage);
+      const { nltkNer} = await import(
         chrome.runtime.getURL("ondevice.js")
       );
-      entities = await getOnDeviceResponseDetect(userMessage);
+        entities = await nltkNer(userMessage);
     }
     return entities;
-  },
+},
 
-  getResponseCluster: async function (clusterMessage) {
+getResponseCluster: async function(clusterMessage) {
     let clustersResponse;
     if (!this.useOnDeviceModel) {
-      const { getCloudResponseCluster } = await import(
-        chrome.runtime.getURL("openai.js")
-      );
-      clustersResponse = await getCloudResponseCluster(clusterMessage);
+        const { getCloudResponseCluster } = await import(
+            chrome.runtime.getURL("openai.js")
+        );
+        clustersResponse = await getCloudResponseCluster(clusterMessage);
     } else {
-      const { getOnDeviceResponseCluster } = await import(
+      const { clusterUf } = await import(
         chrome.runtime.getURL("ondevice.js")
       );
-      clustersResponse = await getOnDeviceResponseCluster(clusterMessage);
+        clustersResponse = await mergeClusteringResponseUpdated(clusterUf);
+      // const { mergeClusteringResponseUpdated } = await import(
+      //   chrome.runtime.getURL("ondevice.js")
+      // );
+      //   clustersResponse = await mergeClusteringResponseUpdated(clusterMessage);
     }
     return clustersResponse;
-  },
+},
 
   getAbstractResponse: async function (
     originalMessage,
